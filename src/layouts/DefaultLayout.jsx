@@ -8,7 +8,7 @@ const DefaultLayout = ({ children }) => {
   return (
     <div>
       <Header />
-      <Container style={{minHeight: 600}}>{children}</Container>
+      <Container style={{minHeight: 500}}>{children}</Container>
       <Footer />
     </div>
   );
