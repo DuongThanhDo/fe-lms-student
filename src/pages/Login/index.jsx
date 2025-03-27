@@ -7,6 +7,8 @@ import axios from "axios";
 import { loginUser } from "../../store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
+import { Roles } from "../../utils/enums";
+import { configs } from "../../configs";
 
 const Login = () => {
   const passwordRef = useRef(null);
@@ -29,6 +31,7 @@ const Login = () => {
       const response = await axios.post("http://localhost:5000/users/login", {
         email,
         password,
+        expectedRole: Roles.STUDENT
       });
 
       console.log(response.data);
@@ -43,7 +46,7 @@ const Login = () => {
 
         message.success("Đăng nhập thành công!");
         setTimeout(() => {
-          navigate("/");
+          navigate(configs.routes.home);
         }, 1000);
       } else {
         message.error(response.data.message || "Đăng nhập thất bại!");
@@ -122,7 +125,7 @@ const Login = () => {
 
           <div className="text-center mt-3">
             <span className="text-muted">Chưa có tài khoản? </span>
-            <Link to="/register" className="text-primary">
+            <Link to={configs.routes.register} className="text-primary">
               Đăng ký ngay
             </Link>
           </div>

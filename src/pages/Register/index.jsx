@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { assets } from "../../assets";
 import axios from "axios";
 import { Roles } from "../../utils/enums";
+import { configs } from "../../configs";
 
 const Register = () => {
   const passwordRef = useRef(null);
@@ -45,7 +46,7 @@ const Register = () => {
       if (response.data?.id) {
         message.success("Đăng nhập thành công!");
         setTimeout(() => {
-          navigate("/login"); 
+          navigate(configs.routes.login); 
         }, 1000);
       } else {
         message.error(response.data.message || "Đăng ký thất bại!");
@@ -124,7 +125,7 @@ const Register = () => {
 
           <div className="text-center mt-3">
             <span className="text-muted">Đã có tài khoản? </span>
-            <Link to="/login" className="text-primary">
+            <Link to={configs.routes.login} className="text-primary">
               Đăng nhập ngay
             </Link>
           </div>

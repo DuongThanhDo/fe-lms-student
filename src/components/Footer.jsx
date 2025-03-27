@@ -5,7 +5,7 @@ import { assets } from "../assets";
 
 const Footer = () => {
   return (
-    <footer style={{backgroundColor: "#181821", color: "#C0C0C0", paddingTop: "60px"}}>
+    <footer style={{backgroundColor: "#181821", color: "#C0C0C0", paddingTop: "60px", marginTop: "100px"}}>
       <Container>
         <Row className="pb-4">
           <Col md={4} className="mb-2 text-start">
