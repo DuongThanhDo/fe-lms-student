@@ -3,6 +3,7 @@ import NoContainer from "../layouts/NoContainer";
 import OnlyHeader from "../layouts/OnlyHeader";
 import About from "../pages/About";
 import ChangePassword from "../pages/ChangePassword";
+import Courses from "../pages/Course";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Profile from "../pages/Profile";
@@ -18,5 +19,6 @@ export const publicRoutes = [
     { path: configs.routes.changePassword, component: ChangePassword, },
     { path: configs.routes.profile, component: Profile, },
     { path: configs.routes.teacher, component: Teacher, },
+    { path: configs.routes.courses, component: Courses, },
     { path: configs.routes.detailTeacher, component: DetailTeacher, },
 ];

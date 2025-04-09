@@ -7,7 +7,7 @@ export const routes = {
     profile: '/profile',
     teacher: '/teachers',
     detailTeacher: '/teachers/:id',
-    course: '/courses',
+    courses: '/courses',
     detailCourse: '/courses/:id',
     myCourse: '/my-courses',
     detailMyCourse: '/my-courses/:id',

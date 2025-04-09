@@ -26,7 +26,7 @@ const Header = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href={configs.routes.home}>Trang chủ</Nav.Link>
-            <Nav.Link href={configs.routes.course}>Khóa học</Nav.Link>
+            <Nav.Link href={configs.routes.courses}>Khóa học</Nav.Link>
             <Nav.Link href={configs.routes.teacher}>Giảng viên</Nav.Link>
             <Nav.Link href={configs.routes.about}>Về chúng tôi</Nav.Link>
           </Nav>
