@@ -1,8 +1,10 @@
 .course-card {
   width: 100%;
-  height: 400px;
+  height: 360px;
   transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
 
 .course-card:hover {
@@ -13,7 +15,7 @@
 .image-container {
   overflow: hidden;
   width: 100%;
-  height: 50%;
+  height: 180px;
 }
 
 .image-container img {
@@ -24,10 +26,17 @@
 }
 
 .course-title {
-  min-height: 30%;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 
-/* .course-card:hover .image-container img {
-    transform: scale(1.2);
-  }
-   */
+.card-body {
+  padding: 10px 14px !important;
+  flex-grow: 1;
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
