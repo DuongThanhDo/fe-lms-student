@@ -3,6 +3,7 @@ import { Form, Input, DatePicker, Select, Button, message } from "antd";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import axios from "axios";
+import { configs } from "../../configs";
 
 const PersonalInfoForm = () => {
   const [form] = Form.useForm();
@@ -14,7 +15,7 @@ const PersonalInfoForm = () => {
 
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/user-profiles/${user.id}`);
+        const response = await axios.get(`${configs.API_BASE_URL}/user-profiles/${user.id}`);
         const data = response.data;
 
         form.setFieldsValue({
@@ -37,7 +38,7 @@ const PersonalInfoForm = () => {
     setLoading(true);
 
     try {
-      await axios.put(`http://localhost:5000/user-profiles/${user.id}`, {
+      await axios.put(`${configs.API_BASE_URL}/user-profiles/${user.id}`, {
         name: values.name || null,
         phone: values.phone || null,
         date_of_birth: values.dob ? values.dob.format("YYYY-MM-DD") : null,
