@@ -1,48 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HeroSection from "../../components/HeroSection";
 import { Col, Row } from "react-bootstrap";
 import CourseCard from "../../components/CourseCard";
-import { assets } from "../../assets";
 import { Button } from "antd";
-
-const fakeCourses = [
-  {
-    id: 1,
-    title: "Khóa học ReactJS từ cơ bản đến nâng cao",
-    instructor: "Nguyễn Văn A",
-    price: "499.000",
-    oldPrice: "999.000",
-    image: assets.images.about1,
-    isOnline: true,
-  },
-  {
-    id: 2,
-    title: "Lập trình Java chuyên sâu",
-    instructor: "Trần Văn B",
-    price: "299.000",
-    oldPrice: "599.000",
-    image: assets.images.banner1,
-    isOnline: false,
-  },
-  {
-    id: 3,
-    title: "Thiết kế giao diện với Figma",
-    instructor: "Lê Thị C",
-    price: "199.000",
-    oldPrice: "399.000",
-    image: assets.images.about1,
-    isOnline: true,
-  },
-  {
-    id: 4,
-    title: "Python cho người mới bắt đầu",
-    instructor: "Phạm Văn D",
-    price: "399.000",
-    oldPrice: "799.000",
-    image: assets.images.about1,
-    isOnline: true,
-  },
-];
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { configs } from "../../configs";
 
 const topics = [
   "Công nghệ phần mềm",
@@ -56,6 +19,46 @@ const topics = [
 ];
 
 const Home = () => {
+  const [hotCourses, setHotCourses] = useState([]);
+  const [freeCourses, setFreeCourses] = useState([]);
+  const [cateOneCourses, setCateOneCourses] = useState([]);
+  const [cateTwoCourses, setCateTwoCourses] = useState([]);
+  const [topCategories, setTopCategories] = useState([]);
+
+  const fetchCourses = async () => {
+    try {
+      const [hot, free, cate1, cate2, topCate] = await Promise.all([
+        axios.get(`${configs.API_BASE_URL}/courses/top-courses`, {
+          params: { limit: 4 },
+        }),
+        axios.get(`${configs.API_BASE_URL}/courses/top-courses`, {
+          params: { isFree: true, limit: 4 },
+        }),
+        axios.get(`${configs.API_BASE_URL}/courses/top-courses`, {
+          params: { category: 1, limit: 4 },
+        }),
+        axios.get(`${configs.API_BASE_URL}/courses/top-courses`, {
+          params: { category: 2, limit: 4 },
+        }),
+        axios.get(`${configs.API_BASE_URL}/categories/top`, {
+          params: { limit: 8 },
+        }),
+      ]);
+
+      setHotCourses(hot.data);
+      setFreeCourses(free.data);
+      setCateOneCourses(cate1.data);
+      setCateTwoCourses(cate2.data);
+      setTopCategories(topCate.data);
+    } catch (error) {
+      console.error('Lỗi khi fetch courses:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
   return (
     <>
       <HeroSection />
@@ -66,7 +69,7 @@ const Home = () => {
 
       <h2>Được đề xuất cho bạn</h2>
       <Row className="my-5">
-        {fakeCourses.map((course) => (
+        {hotCourses.map((course) => (
           <Col key={course.id} md={6} lg={4} xl={3} className="mb-4">
             <CourseCard course={course} />
           </Col>
@@ -75,7 +78,7 @@ const Home = () => {
 
       <h2>Khóa học miễn phí</h2>
       <Row className="my-5">
-        {fakeCourses.map((course) => (
+        {freeCourses.map((course) => (
           <Col key={course.id} md={6} lg={4} xl={3} className="mb-4">
             <CourseCard course={course} />
           </Col>
@@ -87,14 +90,16 @@ const Home = () => {
       >
         <h2 style={{ color: "#00796B" }}>Chủ đề đề xuất dành cho bạn</h2>
         <Row className="g-4 mt-2">
-          {topics.map((topic, index) => (
-            <Col key={index} xs={12} md={3}>
-              <Button
-                type="primary"
-                style={{ width: "100%", height: "60px", backgroundColor: "#1B8381", borderColor: "#1B8381" }}
-              >
-                {topic}
-              </Button>
+          {topCategories.map((cate) => (
+            <Col key={cate.id} xs={12} md={3}>
+              <Link to={`${configs.routes.courses}?category=${cate.id}`}>
+                <Button
+                  type="primary"
+                  style={{ width: "100%", height: "60px", backgroundColor: "#1B8381", borderColor: "#1B8381" }}
+                >
+                  {cate.name}
+                </Button>
+              </Link>
             </Col>
           ))}
         </Row>
@@ -107,7 +112,7 @@ const Home = () => {
 
       <h2>Khóa học hàng đầu về công nghệ phần mềm</h2>
       <Row className="my-5">
-        {fakeCourses.map((course) => (
+        {cateOneCourses.map((course) => (
           <Col key={course.id} md={6} lg={4} xl={3} className="mb-4">
             <CourseCard course={course} />
           </Col>
@@ -116,7 +121,7 @@ const Home = () => {
 
       <h2>Khóa học hàng đầu về an toàn thông tin</h2>
       <Row className="my-5">
-        {fakeCourses.map((course) => (
+        {cateTwoCourses.map((course) => (
           <Col key={course.id} md={6} lg={4} xl={3} className="mb-4">
             <CourseCard course={course} />
           </Col>

@@ -6,7 +6,7 @@ import { Tag } from "antd";
 
 const CourseCard = ({ course }) => {
   return (
-    <Link style={{ textDecoration: "none" }} to={`/course/${course.id}`}>
+    <Link style={{ textDecoration: "none" }} to={`/courses/${course.id}`}>
       <Card className="shadow-sm border-0 course-card">
         <div className="image-container">
           <Card.Img variant="top" src={course.image?.file_url} alt={course.name} />

@@ -3,47 +3,59 @@ import { Card, Input, Select, Row, Col } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CourseCard from "../../components/CourseCard";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
+import { configs } from "../../configs";
 
 const { Option } = Select;
 const { Search } = Input;
 
 const Courses = () => {
+  const [searchParams] = useSearchParams();
+  const categoryId = searchParams.get("category");
   const [courses, setCourses] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [type, setType] = useState(null);
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState(categoryId);
   const [categories, setCategories] = useState([]);
   const [sort, setSort] = useState("best");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const pageSize = 12;
 
+
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await axios.get("http://localhost:5000/categories");
-      setCategories(response.data);
+      try {
+        const res = await axios.get(`${configs.API_BASE_URL}/categories`);
+        setCategories(res.data);
+      } catch (err) {
+        console.error("Lỗi khi lấy danh sách danh mục:", err);
+      }
     };
 
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+    setHasMore(true);
+    fetchCourses(1, true);
+  }, [searchValue, category, type, sort]);
+
   const fetchCourses = async (pageNumber = page, reset = false) => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/courses/student",
-        {
-          params: {
-            searchValue,
-            category,
-            type,
-            sort,
-            page: pageNumber,
-            limit: pageSize,
-          },
-        }
-      );
+      const res = await axios.get(`${configs.API_BASE_URL}/courses/student`, {
+        params: {
+          searchValue,
+          category,
+          type,
+          sort,
+          page: pageNumber,
+          limit: pageSize,
+        },
+      });
 
-      const newCourses = response.data.data || [];
+      const newCourses = res.data.data || [];
 
       if (reset) {
         setCourses(newCourses);
@@ -54,16 +66,10 @@ const Courses = () => {
       if (newCourses.length < pageSize) {
         setHasMore(false);
       }
-    } catch (error) {
-      console.error("Lỗi khi tải khóa học:", error);
+    } catch (err) {
+      console.error("Lỗi khi tải khóa học:", err);
     }
   };
-
-  useEffect(() => {
-    setPage(1);
-    setHasMore(true);
-    fetchCourses(1, true);
-  }, [searchValue, category, type, sort]);
 
   const fetchNext = () => {
     setPage((prevPage) => {
@@ -75,7 +81,6 @@ const Courses = () => {
 
   return (
     <Row gutter={[40, 0]} className="mt-5">
-      {/* Sidebar lọc */}
       <Col span={6}>
         <Card title="Lọc theo" bordered={false}>
           <div className="mb-2 font-semibold">Loại khóa học</div>
@@ -97,11 +102,11 @@ const Courses = () => {
             value={category}
             onChange={(value) => setCategory(value)}
             allowClear
-            style={{ width: "100%" }}
             className="mb-4"
+            style={{ width: "100%" }}
           >
             {categories.map((cate) => (
-              <Option key={cate.id} value={cate.id}>
+              <Option key={cate.id} value={String(cate.id)}>
                 {cate.name}
               </Option>
             ))}
@@ -109,9 +114,8 @@ const Courses = () => {
         </Card>
       </Col>
 
-      {/* Kết quả */}
       <Col span={18}>
-        <Row gutter={16}>
+        <Row gutter={16} style={{ padding: "0 10px" }}>
           <Col span={18}>
             <Search
               placeholder="Tìm khóa học"
@@ -137,14 +141,13 @@ const Courses = () => {
           </Col>
         </Row>
 
-        <h3>Danh sách khóa học</h3>
         <InfiniteScroll
           dataLength={courses.length}
           next={fetchNext}
           hasMore={hasMore}
           loader={<p style={{ textAlign: "center" }}>Đang tải khóa học...</p>}
         >
-          <div style={{ overflowX: "hidden", padding: "10px 0px" }}>
+          <div style={{ overflowX: "hidden", padding: "10px" }}>
             <Row gutter={[16, 16]}>
               {courses.map((course) => (
                 <Col span={8} key={course.id}>

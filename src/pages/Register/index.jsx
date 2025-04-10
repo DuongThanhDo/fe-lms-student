@@ -28,7 +28,7 @@ const Register = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/users/register", {
+      const response = await axios.post(`${configs.API_BASE_URL}/users/register`, {
         email,
         password,
         role: Roles.STUDENT,
