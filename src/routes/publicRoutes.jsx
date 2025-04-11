@@ -1,4 +1,5 @@
 import { configs } from "../configs";
+import CourseLayout from "../layouts/CourseLayout";
 import NoContainer from "../layouts/NoContainer";
 import OnlyHeader from "../layouts/OnlyHeader";
 import About from "../pages/About";
@@ -11,6 +12,8 @@ import Profile from "../pages/Profile";
 import Register from "../pages/Register";
 import Teacher from "../pages/Teacher";
 import DetailTeacher from "../pages/Teacher/DetailTeacher";
+import ViewCourse from "../pages/ViewCourse";
+import Lecture from "../pages/ViewCourse/contens/Lecture";
 
 export const publicRoutes = [
     { path: configs.routes.home, component: Home, },
@@ -23,4 +26,6 @@ export const publicRoutes = [
     { path: configs.routes.courses, component: Courses, },
     { path: configs.routes.detailTeacher, component: DetailTeacher, },
     { path: configs.routes.detailCourse, component: CourseDetail, },
+    { path: configs.routes.detailMyCourse, component: ViewCourse, layout: null},
+    { path: configs.routes.lectureCourse, component: Lecture, layout: CourseLayout},
 ];
