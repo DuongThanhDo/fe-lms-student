@@ -11,6 +11,9 @@ export const routes = {
     detailCourse: '/courses/:id',
     myCourse: '/my-courses',
     detailMyCourse: '/my-courses/:id',
+    lectureCourse: '/courses/:courseId/lecture/:lectureId',
+    quizCourse: '/courses/:courseId/quiz/:quizId',
+    codeCourse: '/courses/:courseId/code/:codeId',
     schedule: '/Schedule',
     message: '/message'
 };
