@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import { Button, Input, message } from "antd";
-import { GoogleOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { assets } from "../../assets";
 import axios from "axios";
@@ -9,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { Roles } from "../../utils/enums";
 import { configs } from "../../configs";
+import LoginWithGoogle from "../../components/LoginWithGoogle";
 
 const Login = () => {
   const passwordRef = useRef(null);
@@ -114,14 +114,7 @@ const Login = () => {
 
           <div className="text-center text-muted mb-2">Các tùy chọn khác</div>
 
-          <Button
-            block
-            size="large"
-            icon={<GoogleOutlined />}
-            className="d-flex align-items-center justify-content-center"
-          >
-            Tiếp tục với Google
-          </Button>
+          <LoginWithGoogle />
 
           <div className="text-center mt-3">
             <span className="text-muted">Chưa có tài khoản? </span>
