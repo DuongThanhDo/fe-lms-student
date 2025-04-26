@@ -2,18 +2,20 @@ import { message } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { configs } from "../../configs";
+import { configs } from "../../../configs";
+import { useSelector } from "react-redux";
 
 const ViewCourse = () => {
   const { id: courseId } = useParams();
   const [content, setContent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.auth.userInfo);
   const navigate = useNavigate();
 
   const fetchContentCourse = async () => {
     try {
       const response = await axios.get(
-        `${configs.API_BASE_URL}/chapters/content/${courseId}`
+        `${configs.API_BASE_URL}/chapters/student/content?userId=${user.id}&courseId=${courseId}`
       );
       setContent(response.data);
       setLoading(false); 
@@ -34,7 +36,7 @@ const ViewCourse = () => {
     if (!loading) {
       if (content.length === 0) {
         message.error('Chưa có nội dung khóa học');
-        navigate(`/courses`);
+        window.history.back();
       } else {
         const firstContent = content[0]?.items[0];
         if (firstContent?.type === "lecture") {

@@ -15,5 +15,6 @@ export const routes = {
     quizCourse: '/courses/:courseId/quiz/:quizId',
     codeCourse: '/courses/:courseId/code/:codeId',
     schedule: '/Schedule',
-    message: '/message'
+    message: '/message',
+    payment: '/payment/:id'
 };

@@ -6,11 +6,11 @@ import {
   ReadOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import CourseInfoSell from "../../components/CourseInfoSell";
-import CourseOnContentSell from "../../components/CourseOnContentSell";
+import CourseInfoSell from "../../../components/CourseInfoSell";
+import CourseOnContentSell from "../../../components/CourseOnContentSell";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { configs } from "../../configs";
+import { configs } from "../../../configs";
 
 const { Title, Paragraph } = Typography;
 

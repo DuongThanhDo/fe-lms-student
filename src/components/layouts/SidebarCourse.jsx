@@ -4,6 +4,7 @@ import {
   PlayCircleOutlined,
   CodeOutlined,
   QuestionCircleOutlined,
+  CheckCircleFilled,
 } from "@ant-design/icons";
 import "../../assets/css/CourseLayout.css";
 import { formatDuration } from "../../utils/functions/time";
@@ -92,24 +93,24 @@ const SidebarCourse = ({
         activeKey={activeKeys}
         onChange={handleCollapseChange}
       >
-        {contents.map((chapter, indexC) => (
+        {contents.map((_chapter, indexC) => (
           <Panel
             className="custom-panel-header"
             header={
               <div>
                 <div style={{ fontWeight: "bold" }}>
-                  {indexC + 1}. {chapter.title}
+                  {indexC + 1}. {_chapter.title}
                 </div>
                 <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>
-                  {chapter.items.length} | {formatDuration(chapter.duration)}
+                  {_chapter.items.length} | {formatDuration(_chapter.duration)}
                 </div>
               </div>
             }
-            key={chapter.id}
+            key={_chapter.id}
           >
             <div className="custom-panel-content">
               <ul>
-                {chapter.items.map((item, indexI) => (
+                {_chapter.items.map((item, indexI) => (
                   <li
                     onClick={() => handleClickItem(item)}
                     key={item.id}
@@ -119,11 +120,26 @@ const SidebarCourse = ({
                         ? "selected-item"
                         : ""
                     }
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
                   >
-                    <p>
-                      {indexI + 1}. {item.title}
-                    </p>
-                    {renderIconAndDuration(item)}
+                    <div>
+                      <p>
+                        {indexI + 1}. {item.title}
+                      </p>
+                      {renderIconAndDuration(item)}
+                    </div>
+                    <div>
+                      <CheckCircleFilled
+                        style={{
+                          color: item.status ? "green" : "#ccc",
+                          fontSize: 18,
+                        }}
+                      />
+                    </div>
                   </li>
                 ))}
               </ul>

@@ -7,17 +7,18 @@ import CourseHeader from "../components/layouts/CourseHeader";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { configs } from "../configs";
 import SidebarCourse from "../components/layouts/SidebarCourse";
+import { useSelector } from "react-redux";
 
 const { Content, Footer } = Layout;
 const SIDEBAR_WIDTH = 320;
 
-const fetchCourseData = async (courseId) => {
+const fetchCourseData = async (userId, courseId) => {
   try {
     const courseResponse = await axios.get(
       `${configs.API_BASE_URL}/courses/${courseId}`
     );
     const contentsResponse = await axios.get(
-      `${configs.API_BASE_URL}/chapters/content/${courseId}`
+      `${configs.API_BASE_URL}/chapters/student/content?userId=${userId}&courseId=${courseId}`
     );
     return { course: courseResponse.data, contents: contentsResponse.data };
   } catch (error) {
@@ -33,6 +34,8 @@ const CourseLayout = ({ children }) => {
   const [selectedItem, setSelectedItem] = useState({ type: null, id: null });
 
   const { courseId } = useParams();
+  
+  const user = useSelector((state) => state.auth.userInfo);
   const navigator = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
@@ -44,7 +47,7 @@ const CourseLayout = ({ children }) => {
     if (!courseId) return;
 
     const loadData = async () => {
-      const { course, contents } = await fetchCourseData(courseId);
+      const { course, contents } = await fetchCourseData(user.id, courseId);
       setCourse(course);
       setContents(contents);
     };

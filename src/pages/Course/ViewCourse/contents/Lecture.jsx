@@ -2,10 +2,10 @@ import { Tabs, Spin, message, Typography } from "antd";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import CommentBox from "../../../components/CommentBox";
+import CommentBox from "../../../../components/CommentBox";
 import { useSelector } from "react-redux";
-import { configs } from "../../../configs";
-import NoteLecture from "../../../components/NoteLecture";
+import { configs } from "../../../../configs";
+import NoteLecture from "../../../../components/NoteLecture";
 
 const { TabPane } = Tabs;
 

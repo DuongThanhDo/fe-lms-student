@@ -6,6 +6,7 @@ import {
   ReadOutlined,
   BookOutlined,
 } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const { Text, Title } = Typography;
 
@@ -34,7 +35,14 @@ const CourseInfoSell = ({ course }) => {
         block
         style={{ marginBottom: 16, backgroundColor: "#00bfa6", border: "none" }}
       >
-        Đăng ký học
+        <Link
+          to={{
+            pathname: `/payment/${course.id}`,
+            state: { course },
+          }}
+        >
+          Đăng ký học
+        </Link>
       </Button>
 
       <Space direction="vertical" size={10}>
