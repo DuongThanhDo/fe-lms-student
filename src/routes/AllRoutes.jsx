@@ -16,6 +16,7 @@ import Lecture from "../pages/Course/ViewCourse/contents/Lecture";
 import CourseDetail from "../pages/Course/CourseDetail";
 import Payment from "../pages/Payment";
 import MyCourse from "../pages/MyCourse";
+import Quiz from "../pages/Course/ViewCourse/contents/Quiz";
 
 export const AllRoutes = [
     { path: configs.routes.home, component: Home, },
@@ -32,4 +33,5 @@ export const AllRoutes = [
     { path: configs.routes.payment, component: Payment, },
     { path: configs.routes.detailMyCourse, component: ViewCourse, layout: null},
     { path: configs.routes.lectureCourse, component: Lecture, layout: CourseLayout},
+    { path: configs.routes.quizCourse, component: Quiz, layout: CourseLayout},
 ];

@@ -9,8 +9,9 @@ import {
 import CourseInfoSell from "../../../components/CourseInfoSell";
 import CourseOnContentSell from "../../../components/CourseOnContentSell";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { configs } from "../../../configs";
+import { useSelector } from "react-redux";
 
 const { Title, Paragraph } = Typography;
 
@@ -18,6 +19,8 @@ const CourseDetail = () => {
   const [course, setCourse] = useState({});
   const [requirements, setRequirements] = useState([]);
   const [outcomes, setOutcomes] = useState([]);
+  const user = useSelector((state) => state.auth.userInfo);
+  const navigate = useNavigate()
 
   const { id: courseId } = useParams();
 
@@ -38,9 +41,26 @@ const CourseDetail = () => {
       console.error("Lỗi khi fetch courses:", error);
     }
   };
+  const checkPurchased = async () => {
+    try {
+      if (!user.id) return;
+
+      const res = await axios.post(`${configs.API_BASE_URL}/course-registrations/check-purchased`, {
+        userId: Number(user.id),
+        courseId: Number(courseId),
+      });
+
+      if (res.data.isPurchased) {
+        navigate(`/my-courses/${courseId}`);
+      }
+    } catch (error) {
+      console.error("Lỗi khi kiểm tra khóa học đã mua:", error);
+    }
+  };
 
   useEffect(() => {
-    fetchData();
+    checkPurchased(); 
+    fetchData();  
   }, []);
 
   return (

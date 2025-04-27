@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Collapse } from "antd";
+import { Typography, Collapse, Checkbox } from "antd";
 import {
   PlayCircleOutlined,
   CodeOutlined,
@@ -17,6 +17,7 @@ const SidebarCourse = ({
   selectedItem,
   handleClickItem,
   durations,
+  handleToggleLessonStatus
 }) => {
   const [activeKeys, setActiveKeys] = useState([]);
 
@@ -132,13 +133,13 @@ const SidebarCourse = ({
                       </p>
                       {renderIconAndDuration(item)}
                     </div>
-                    <div>
-                      <CheckCircleFilled
-                        style={{
-                          color: item.status ? "green" : "#ccc",
-                          fontSize: 18,
-                        }}
-                      />
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleLessonStatus(item);
+                      }}
+                    >
+                      <Checkbox checked={item.status} />
                     </div>
                   </li>
                 ))}
