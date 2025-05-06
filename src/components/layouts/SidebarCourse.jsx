@@ -103,7 +103,7 @@ const SidebarCourse = ({
                   {indexC + 1}. {_chapter.title}
                 </div>
                 <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>
-                  {_chapter.items.length} | {formatDuration(_chapter.duration)}
+                  {_chapter.items.filter((i) => i.status == true).length}/{_chapter.items.length} | {formatDuration(_chapter.duration)}
                 </div>
               </div>
             }

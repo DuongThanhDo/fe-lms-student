@@ -65,7 +65,6 @@ const CourseDetail = () => {
 
   return (
     <Row gutter={40} style={{ marginTop: 40 }}>
-      {/* Left content */}
       <Col span={18}>
         <Title level={2}>{course.name}</Title>
         <Paragraph>{course.description}</Paragraph>
@@ -104,7 +103,6 @@ const CourseDetail = () => {
         />
       </Col>
 
-      {/* Right sidebar */}
       <Col span={6}>
         <CourseInfoSell course={course} />
       </Col>

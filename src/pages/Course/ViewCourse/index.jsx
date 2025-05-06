@@ -5,6 +5,43 @@ import { useNavigate, useParams } from "react-router-dom";
 import { configs } from "../../../configs";
 import { useSelector } from "react-redux";
 
+const getLastCompletedLesson = (chapters) => {
+  const flatItems = [];
+
+  chapters.forEach((chapter, chapterIndex) => {
+    chapter.items.forEach((item, itemIndex) => {
+      flatItems.push({
+        ...item,
+        chapterIndex,
+        itemIndex,
+      });
+    });
+  });
+
+  if (flatItems.length === 0) {
+    return null;
+  }
+
+  let lastCompletedIndex = -1;
+
+  for (let i = 0; i < flatItems.length; i++) {
+    if (flatItems[i].status === true) {
+      lastCompletedIndex = i;
+    }
+  }
+
+  console.log("flatItems:", flatItems);
+
+  if (lastCompletedIndex === -1) {
+    return flatItems[0];
+  } else if (lastCompletedIndex < flatItems.length - 1) {
+    return flatItems[lastCompletedIndex + 1];
+  } else {
+    return flatItems[lastCompletedIndex];
+  }
+}
+
+
 const ViewCourse = () => {
   const { id: courseId } = useParams();
   const [content, setContent] = useState([]);
@@ -32,19 +69,24 @@ const ViewCourse = () => {
     fetchContentCourse();
   }, [courseId]);
 
+  console.log(content);
+  
+
   useEffect(() => {
     if (!loading) {
       if (content.length === 0) {
         message.error('Chưa có nội dung khóa học');
         window.history.back();
       } else {
-        const firstContent = content[0]?.items[0];
-        if (firstContent?.type === "lecture") {
-          navigate(`/courses/${courseId}/lecture/${firstContent.id}`);
-        } else if (firstContent?.type === "code") {
-          navigate(`/courses/${courseId}/code/${firstContent.id}`);
-        } else if (firstContent?.type === "quiz") {
-          navigate(`/courses/${courseId}/quiz/${firstContent.id}`);
+        let contentTaget = getLastCompletedLesson(content);
+
+        if(!contentTaget) contentTaget = content[0]?.items[0];
+        if (contentTaget?.type === "lecture") {
+          navigate(`/courses/${courseId}/lecture/${contentTaget.id}`);
+        } else if (contentTaget?.type === "code") {
+          navigate(`/courses/${courseId}/code/${contentTaget.id}`);
+        } else if (contentTaget?.type === "quiz") {
+          navigate(`/courses/${courseId}/quiz/${contentTaget.id}`);
         }
       }
     }

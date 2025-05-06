@@ -86,6 +86,7 @@ const CourseLayout = ({ children }) => {
     let previousItem = null;
     let nextItem = null;
     let chapterCurrent = null;
+    let lessonCurrent = null;
 
     for (let i = 0; i < contents.length; i++) {
       const chapter = contents[i];
@@ -94,6 +95,12 @@ const CourseLayout = ({ children }) => {
       const currentIndex = items.findIndex(
         (item) => item.id == currentItem.id && item.type == currentItem.type
       );
+
+      const itemTaget = items.find(
+        (item) => item.id == currentItem.id && item.type == currentItem.type
+      );
+
+      lessonCurrent = itemTaget;
 
       if (currentIndex !== -1) {
         if (currentIndex > 0) {
@@ -125,7 +132,7 @@ const CourseLayout = ({ children }) => {
       }
     }
 
-    return { previousItem, nextItem, chapterCurrent };
+    return { previousItem, nextItem, chapterCurrent, lessonCurrent };
   };
 
   const handleToggleLessonStatus = async (item) => {
@@ -168,8 +175,13 @@ const CourseLayout = ({ children }) => {
   const progress =
     totalLessons === 0 ? 0 : (completedLessons / totalLessons) * 100;
 
-  const { previousItem, nextItem, chapterCurrent } =
+  const { previousItem, nextItem, chapterCurrent, lessonCurrent } =
     getPreviousAndNextItem(selectedItem);
+
+  const handleNext = (nextItem, lessonCurrent) => {
+    if (!lessonCurrent.status) handleToggleLessonStatus(lessonCurrent);
+    if(!!nextItem) navigator(`/courses/${courseId}/${nextItem.type}/${nextItem.id}`);
+  };
 
   return (
     <Layout style={{ minHeight: "100vh", backgroundColor: "white" }}>
@@ -217,14 +229,19 @@ const CourseLayout = ({ children }) => {
             Bài trước
           </Button>
 
-          <Button
-            onClick={() =>
-              navigator(`/courses/${courseId}/${nextItem.type}/${nextItem.id}`)
-            }
-            disabled={!nextItem}
-          >
-            Bài tiếp theo <ArrowRightOutlined />
-          </Button>
+          {!nextItem ? (
+            <Button type="primary"
+              onClick={() => handleNext(nextItem, lessonCurrent)}
+            >
+              Hoàn thành <ArrowRightOutlined />
+            </Button>
+          ) : (
+            <Button
+              onClick={() => handleNext(nextItem, lessonCurrent)}
+            >
+              Bài tiếp theo <ArrowRightOutlined />
+            </Button>
+          )}
         </div>
 
         <Button type="primary" ghost onClick={() => setShowSider(!showSider)}>

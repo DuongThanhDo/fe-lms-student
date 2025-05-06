@@ -1,16 +1,41 @@
 import React from "react";
-import { Card, Button, Typography, Space } from "antd";
+import { Card, Button, Typography, Space, message } from "antd";
 import {
   ClockCircleOutlined,
   CheckCircleOutlined,
   ReadOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { configs } from "../configs";
 
 const { Text, Title } = Typography;
 
 const CourseInfoSell = ({ course }) => {
+  const user = useSelector((state) => state.auth.userInfo);
+  const handlePayment = async () => {
+    try {
+      const response = await axios.get(`${configs.API_BASE_URL}/payment/create`, {
+        params: {
+          courseId: course.id,
+          userId: user.id,
+          amount: course.price,
+        },
+      });
+      console.log(response);
+
+      if (response.data && response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        message.error("Không thể tạo URL thanh toán.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tạo thanh toán:", error);
+      message.error("Đã có lỗi xảy ra khi xử lý thanh toán.");
+    }
+  };
+
   return (
     <Card
       hoverable
@@ -33,16 +58,10 @@ const CourseInfoSell = ({ course }) => {
       <Button
         type="primary"
         block
+        onClick={handlePayment}
         style={{ marginBottom: 16, backgroundColor: "#00bfa6", border: "none" }}
       >
-        <Link
-          to={{
-            pathname: `/payment/${course.id}`,
-            state: { course },
-          }}
-        >
-          Đăng ký học
-        </Link>
+        Đăng ký học
       </Button>
 
       <Space direction="vertical" size={10}>

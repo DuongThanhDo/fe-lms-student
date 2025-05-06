@@ -16,5 +16,6 @@ export const routes = {
     codeCourse: '/courses/:courseId/code/:codeId',
     schedule: '/Schedule',
     message: '/message',
-    payment: '/payment/:id'
+    payment: '/payment/:id',
+    paymentReturn: '/payment-result'
 };
