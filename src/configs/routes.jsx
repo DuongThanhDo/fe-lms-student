@@ -17,5 +17,5 @@ export const routes = {
     schedule: '/Schedule',
     message: '/message',
     payment: '/payment/:id',
-    paymentReturn: '/payment-result'
+    paymentrResult: '/payment-result'
 };

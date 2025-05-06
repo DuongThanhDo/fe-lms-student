@@ -30,7 +30,7 @@ export const AllRoutes = [
     { path: configs.routes.myCourse, component: MyCourse, },
     { path: configs.routes.detailTeacher, component: DetailTeacher, },
     { path: configs.routes.detailCourse, component: CourseDetail, },
-    { path: configs.routes.paymentReturn, component: Payment, },
+    { path: configs.routes.paymentrResult, component: Payment, },
     { path: configs.routes.detailMyCourse, component: ViewCourse},
     { path: configs.routes.lectureCourse, component: Lecture, layout: CourseLayout},
     { path: configs.routes.quizCourse, component: Quiz, layout: CourseLayout},
