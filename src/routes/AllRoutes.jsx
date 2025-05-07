@@ -17,6 +17,7 @@ import CourseDetail from "../pages/Course/CourseDetail";
 import Payment from "../pages/Payment";
 import MyCourse from "../pages/MyCourse";
 import Quiz from "../pages/Course/ViewCourse/contents/Quiz";
+import CalendarPage from "../pages/Calendar";
 
 export const AllRoutes = [
     { path: configs.routes.home, component: Home, },
@@ -34,4 +35,5 @@ export const AllRoutes = [
     { path: configs.routes.detailMyCourse, component: ViewCourse},
     { path: configs.routes.lectureCourse, component: Lecture, layout: CourseLayout},
     { path: configs.routes.quizCourse, component: Quiz, layout: CourseLayout},
+    { path: configs.routes.schedule, component: CalendarPage},
 ];

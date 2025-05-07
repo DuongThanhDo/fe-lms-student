@@ -14,7 +14,7 @@ export const routes = {
     lectureCourse: '/courses/:courseId/lecture/:lectureId',
     quizCourse: '/courses/:courseId/quiz/:quizId',
     codeCourse: '/courses/:courseId/code/:codeId',
-    schedule: '/Schedule',
+    schedule: '/schedule',
     message: '/message',
     payment: '/payment/:id',
     paymentrResult: '/payment-result'
