@@ -6,11 +6,12 @@ import {
   ReadOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import CourseInfoSell from "../../components/CourseInfoSell";
-import CourseOnContentSell from "../../components/CourseOnContentSell";
+import CourseInfoSell from "../../../components/CourseInfoSell";
+import CourseOnContentSell from "../../../components/CourseOnContentSell";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import { configs } from "../../configs";
+import { useNavigate, useParams } from "react-router-dom";
+import { configs } from "../../../configs";
+import { useSelector } from "react-redux";
 
 const { Title, Paragraph } = Typography;
 
@@ -18,6 +19,8 @@ const CourseDetail = () => {
   const [course, setCourse] = useState({});
   const [requirements, setRequirements] = useState([]);
   const [outcomes, setOutcomes] = useState([]);
+  const user = useSelector((state) => state.auth.userInfo);
+  const navigate = useNavigate()
 
   const { id: courseId } = useParams();
 
@@ -38,14 +41,30 @@ const CourseDetail = () => {
       console.error("Lỗi khi fetch courses:", error);
     }
   };
+  const checkPurchased = async () => {
+    try {
+      if (!user.id) return;
+
+      const res = await axios.post(`${configs.API_BASE_URL}/course-registrations/check-purchased`, {
+        userId: Number(user.id),
+        courseId: Number(courseId),
+      });
+
+      if (res.data.isPurchased) {
+        navigate(`/my-courses/${courseId}`);
+      }
+    } catch (error) {
+      console.error("Lỗi khi kiểm tra khóa học đã mua:", error);
+    }
+  };
 
   useEffect(() => {
-    fetchData();
+    checkPurchased(); 
+    fetchData();  
   }, []);
 
   return (
     <Row gutter={40} style={{ marginTop: 40 }}>
-      {/* Left content */}
       <Col span={18}>
         <Title level={2}>{course.name}</Title>
         <Paragraph>{course.description}</Paragraph>
@@ -84,7 +103,6 @@ const CourseDetail = () => {
         />
       </Col>
 
-      {/* Right sidebar */}
       <Col span={6}>
         <CourseInfoSell course={course} />
       </Col>

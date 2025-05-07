@@ -1,28 +1,15 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import DefaultLayout from "./layouts/DefaultLayout";
-import { Fragment, useEffect, useState } from "react";
-import { publicRoutes } from "./routes/publicRoutes";
-import { privateRoutes } from "./routes/privateRoutes";
-import { useSelector } from "react-redux";
+import { Fragment } from "react";
+import { AllRoutes } from "./routes/AllRoutes";
 
 function App() {
-  const authState = useSelector((state) => state.auth);
-  const login = authState.isLoggedIn;
-
-  const [allRoutes, setAllRoutes] = useState([]);
-
-  useEffect(() => {
-    const tempPrivateRoutes = login ? privateRoutes : [];
-    const routes = [...publicRoutes, ...tempPrivateRoutes];
-    setAllRoutes(routes); 
-  }, [login]);
-
   return (
     <Router>
       <div className="App">
         <Routes>
-          {allRoutes.map((route, index) => {
+          {AllRoutes.map((route, index) => {
             const Page = route.component;
             let Layout = DefaultLayout;
 

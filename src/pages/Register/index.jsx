@@ -6,6 +6,7 @@ import { assets } from "../../assets";
 import axios from "axios";
 import { Roles } from "../../utils/enums";
 import { configs } from "../../configs";
+import LoginWithGoogle from "../../components/LoginWithGoogle";
 
 const Register = () => {
   const passwordRef = useRef(null);
@@ -114,14 +115,7 @@ const Register = () => {
 
           <div className="text-center text-muted mb-2">Các tùy chọn khác</div>
 
-          <Button
-            block
-            size="large"
-            icon={<GoogleOutlined />}
-            className="d-flex align-items-center justify-content-center"
-          >
-            Bắt đầu với Google
-          </Button>
+          <LoginWithGoogle />
 
           <div className="text-center mt-3">
             <span className="text-muted">Đã có tài khoản? </span>

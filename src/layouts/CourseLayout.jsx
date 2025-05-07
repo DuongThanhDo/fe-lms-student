@@ -7,17 +7,24 @@ import CourseHeader from "../components/layouts/CourseHeader";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { configs } from "../configs";
 import SidebarCourse from "../components/layouts/SidebarCourse";
+import { useSelector } from "react-redux";
 
 const { Content, Footer } = Layout;
 const SIDEBAR_WIDTH = 320;
 
-const fetchCourseData = async (courseId) => {
+const fetchCourseData = async (userId, courseId) => {
   try {
     const courseResponse = await axios.get(
-      `${configs.API_BASE_URL}/courses/${courseId}`
+      `${configs.API_BASE_URL}/course-registrations/get-one`,
+      {
+        params: {
+          userId,
+          courseId,
+        },
+      }
     );
     const contentsResponse = await axios.get(
-      `${configs.API_BASE_URL}/chapters/content/${courseId}`
+      `${configs.API_BASE_URL}/chapters/student/content?userId=${userId}&courseId=${courseId}`
     );
     return { course: courseResponse.data, contents: contentsResponse.data };
   } catch (error) {
@@ -33,6 +40,8 @@ const CourseLayout = ({ children }) => {
   const [selectedItem, setSelectedItem] = useState({ type: null, id: null });
 
   const { courseId } = useParams();
+
+  const user = useSelector((state) => state.auth.userInfo);
   const navigator = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
@@ -44,7 +53,7 @@ const CourseLayout = ({ children }) => {
     if (!courseId) return;
 
     const loadData = async () => {
-      const { course, contents } = await fetchCourseData(courseId);
+      const { course, contents } = await fetchCourseData(user.id, courseId);
       setCourse(course);
       setContents(contents);
     };
@@ -77,13 +86,22 @@ const CourseLayout = ({ children }) => {
     let previousItem = null;
     let nextItem = null;
     let chapterCurrent = null;
-  
+    let lessonCurrent = null;
+
     for (let i = 0; i < contents.length; i++) {
       const chapter = contents[i];
       const items = chapter.items;
-  
-      const currentIndex = items.findIndex((item) => (item.id == currentItem.id && item.type == currentItem.type));
-  
+
+      const currentIndex = items.findIndex(
+        (item) => item.id == currentItem.id && item.type == currentItem.type
+      );
+
+      const itemTaget = items.find(
+        (item) => item.id == currentItem.id && item.type == currentItem.type
+      );
+
+      lessonCurrent = itemTaget;
+
       if (currentIndex !== -1) {
         if (currentIndex > 0) {
           previousItem = items[currentIndex - 1];
@@ -92,11 +110,12 @@ const CourseLayout = ({ children }) => {
             previousItem = null;
           } else {
             if (i > 0) {
-              previousItem = contents[i - 1].items[contents[i - 1].items.length - 1];
+              previousItem =
+                contents[i - 1].items[contents[i - 1].items.length - 1];
             }
           }
         }
-  
+
         if (currentIndex < items.length - 1) {
           nextItem = items[currentIndex + 1];
         } else {
@@ -112,16 +131,67 @@ const CourseLayout = ({ children }) => {
         break;
       }
     }
-  
-    return { previousItem, nextItem, chapterCurrent };
-  };
-  
 
-  const { previousItem, nextItem, chapterCurrent } = getPreviousAndNextItem(selectedItem);
+    return { previousItem, nextItem, chapterCurrent, lessonCurrent };
+  };
+
+  const handleToggleLessonStatus = async (item) => {
+    try {
+      const response = await axios.patch(
+        `${configs.API_BASE_URL}/lesson-progresses/${item.lesson_id}`,
+        {
+          status: !item.status,
+        }
+      );
+
+      if (response.status === 200) {
+        setContents((prevContents) =>
+          prevContents.map((chapter) => ({
+            ...chapter,
+            items: chapter.items.map((i) =>
+              i.id === item.id && i.type === item.type
+                ? { ...i, status: !i.status }
+                : i
+            ),
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Lỗi cập nhật trạng thái bài học:", error);
+    }
+  };
+
+  const totalLessons = contents.reduce(
+    (sum, chapter) => sum + chapter.items.length,
+    0
+  );
+
+  const completedLessons = contents.reduce(
+    (sum, chapter) =>
+      sum + chapter.items.filter((item) => item.status === true).length,
+    0
+  );
+
+  const progress =
+    totalLessons === 0 ? 0 : (completedLessons / totalLessons) * 100;
+
+  const { previousItem, nextItem, chapterCurrent, lessonCurrent } =
+    getPreviousAndNextItem(selectedItem);
+
+  const handleNext = (nextItem, lessonCurrent) => {
+    if (!lessonCurrent.status) handleToggleLessonStatus(lessonCurrent);
+    if(!!nextItem) navigator(`/courses/${courseId}/${nextItem.type}/${nextItem.id}`);
+  };
 
   return (
     <Layout style={{ minHeight: "100vh", backgroundColor: "white" }}>
-      <CourseHeader course={course} navigator={navigator} />
+      <CourseHeader
+        course={course}
+        navigator={navigator}
+        progress={progress}
+        totalLessons={totalLessons}
+        completedLessons={completedLessons}
+      />
 
       <Layout style={{ paddingTop: 64, paddingBottom: 64 }}>
         <Content
@@ -139,6 +209,7 @@ const CourseLayout = ({ children }) => {
             contents={contents}
             selectedItem={selectedItem}
             handleClickItem={handleClickItem}
+            handleToggleLessonStatus={handleToggleLessonStatus}
           />
         )}
       </Layout>
@@ -158,14 +229,19 @@ const CourseLayout = ({ children }) => {
             Bài trước
           </Button>
 
-          <Button
-            onClick={() =>
-              navigator(`/courses/${courseId}/${nextItem.type}/${nextItem.id}`)
-            }
-            disabled={!nextItem}
-          >
-            Bài tiếp theo <ArrowRightOutlined />
-          </Button>
+          {!nextItem ? (
+            <Button type="primary"
+              onClick={() => handleNext(nextItem, lessonCurrent)}
+            >
+              Hoàn thành <ArrowRightOutlined />
+            </Button>
+          ) : (
+            <Button
+              onClick={() => handleNext(nextItem, lessonCurrent)}
+            >
+              Bài tiếp theo <ArrowRightOutlined />
+            </Button>
+          )}
         </div>
 
         <Button type="primary" ghost onClick={() => setShowSider(!showSider)}>

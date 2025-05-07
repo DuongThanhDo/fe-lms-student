@@ -13,7 +13,7 @@ const NoteLecture = ({ currentTime, videoRef }) => {
   const user = useSelector((state) => state.auth.userInfo);
   const studentId = user?.id;
   const [notes, setNotes] = useState([]);
-  const [lectureFilter, setLectureFilter] = useState("all");
+  const [lectureFilter, setLectureFilter] = useState("current");
   const [sortOrder, setSortOrder] = useState("latest");
 
   const fetchNotes = async () => {

@@ -9,6 +9,7 @@ const PersonalInfoForm = () => {
   const [form] = Form.useForm();
   const user = useSelector((state) => state.auth.userInfo);
   const [loading, setLoading] = useState(false);
+  const [profileId, setProfileId] = useState(false);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -17,6 +18,7 @@ const PersonalInfoForm = () => {
       try {
         const response = await axios.get(`${configs.API_BASE_URL}/user-profiles/${user.id}`);
         const data = response.data;
+        setProfileId(response.data.id);
 
         form.setFieldsValue({
           name: data.name || "",
@@ -38,7 +40,7 @@ const PersonalInfoForm = () => {
     setLoading(true);
 
     try {
-      await axios.put(`${configs.API_BASE_URL}/user-profiles/${user.id}`, {
+      await axios.put(`${configs.API_BASE_URL}/user-profiles/${profileId}`, {
         name: values.name || null,
         phone: values.phone || null,
         date_of_birth: values.dob ? values.dob.format("YYYY-MM-DD") : null,

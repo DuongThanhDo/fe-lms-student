@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Collapse, Typography } from "antd";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { ClockCircleOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, CodeOutlined, PlayCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { formatDuration } from "../utils/functions/time";
 import { configs } from "../configs";
 
@@ -43,20 +43,43 @@ const CourseOnContentSell = () => {
     fetchCourseContent();
   }, []);
 
+  const renderIconAndDuration = (item) => {
+    if (item.type === "lecture") {
+      return (
+          <PlayCircleOutlined style={{ marginRight: 8 }} />
+      );
+    }
+
+    if (item.type === "code") {
+      return (
+          <CodeOutlined style={{ marginRight: 8 }} />
+      );
+    }
+
+    if (item.type === "quiz") {
+      return (
+          <QuestionCircleOutlined style={{ marginRight: 8 }} />
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div style={{ marginTop: 24 }}>
       <Paragraph>
         <strong>{contents.length}</strong> chương – <strong>{totalLessons}</strong> bài học – Thời lượng{" "}
         <strong>{formatDuration(totalDuration, 'text')}</strong>
       </Paragraph>
-      <Collapse>
+      <Collapse
+      defaultActiveKey={[contents[0]?.id || 0]}>
         {contents.map((chapter, chapterIndex) => (
           <Panel
             key={chapter.id || chapterIndex}
             header={
               <div
                 style={{
-                  display: "flex",
+                  display: "flex",  
                   justifyContent: "space-between",
                   width: "100%",
                 }}
@@ -85,14 +108,14 @@ const CourseOnContentSell = () => {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <PlayCircleOutlined style={{ marginRight: 8 }} />
+                    {renderIconAndDuration(lesson)}
                     <span>
                       {idx + 1}. {lesson.title}
                     </span>
                   </div>
                   <div style={{ color: "#999", fontSize: 13 }}>
                     <ClockCircleOutlined style={{ marginRight: 4 }} />
-                    {formatDuration(lesson.duration)}
+                    {lesson.duration ? formatDuration(lesson.duration) : lesson.type}
                   </div>
                 </div>
               ))}
