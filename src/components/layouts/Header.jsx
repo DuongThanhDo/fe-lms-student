@@ -10,7 +10,6 @@ import { configs } from "../../configs";
 
 const Header = () => {
   const authState = useSelector((state) => state.auth);
-  console.log(authState);
 
   const [isLoggedIn, setIsLoggedIn] = useState(authState.isLoggedIn);
 
