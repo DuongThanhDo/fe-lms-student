@@ -29,14 +29,14 @@ const CalendarPage = () => {
   const [events, setEvents] = useState([]);
   const [myCourse, setMyCourse] = useState([]);
   const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
+  const [description, setDescription] = useState("");
   const [start, setStart] = useState(null);
   const [couse, setCourse] = useState(null); 
   const [end, setEnd] = useState(null);
   const [openSlot, setOpenSlot] = useState(false);
   const [openEvent, setOpenEvent] = useState(false);
   const [clickedEvent, setClickedEvent] = useState({});
-  const [currentView, setCurrentView] = useState(localStorage.getItem('currentView') || 'month');
+  const [currentView, setCurrentView] = useState(localStorage.getItem('currentView') || 'week');
   const [currentDate, setCurrentDate] = useState(localStorage.getItem('currentDate') ? new Date(localStorage.getItem('currentDate')) : new Date());
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const CalendarPage = () => {
       const mappedEvents = response.data.map(item => ({
         id: item.id,
         title: item.title,
-        desc: item.description,
+        description: item.description,
         start: new Date(item.start_time),
         end: new Date(item.end_time),
         course_id: item.course?.id || null,
@@ -80,7 +80,7 @@ const CalendarPage = () => {
     setOpenEvent(false);
     setOpenSlot(false);
     setTitle("");
-    setDesc("");
+    setDescription("");
     setStart(null);
     setCourse(null);
     setEnd(null);
@@ -88,7 +88,7 @@ const CalendarPage = () => {
 
   const handleSlotSelected = (slotInfo) => {
     setTitle("");
-    setDesc("");
+    setDescription("");
     setStart(new Date(slotInfo.start));
     setEnd(new Date(slotInfo.end));
     setCourse(null);
@@ -96,13 +96,15 @@ const CalendarPage = () => {
   };
 
   const handleEventSelected = (event) => {
+    console.log('event: ',event);
+    
     setOpenEvent(true);
     setClickedEvent(event);
     setStart(new Date(event.start));
     setEnd(new Date(event.end));
     setTitle(event.title);
     setCourse(event.course_id);
-    setDesc(event.desc);
+    setDescription(event.description);
   };
 
   const handleStartTime = (time) => {
@@ -125,7 +127,7 @@ const CalendarPage = () => {
 
     const appointment = {
       title,
-      desc,
+      description,
       start_time: startISO,
       end_time: endISO,
       user_id: user.id,
@@ -146,12 +148,14 @@ const CalendarPage = () => {
 
   const updateEvent = async () => {
     const updatedEvent = [...events];
-    const index = events.findIndex((event) => event === clickedEvent);
-
+    const index = events.findIndex((event) => event.id === clickedEvent.id);
+    console.log('events: ', events);
+    console.log('clickedEvent: ', clickedEvent);
+    console.log('index: ', index);
     if (index !== -1) {
       updatedEvent[index] = {
         title,
-        desc,
+        description,
         start: new Date(start),
         end: new Date(end),
         course_id: couse,
@@ -162,7 +166,7 @@ const CalendarPage = () => {
 
       const updatedAppointment = {
         title,
-        desc,
+        description,
         start_time: startISO,
         end_time: endISO,
         course_id: couse,
@@ -227,11 +231,23 @@ const CalendarPage = () => {
         style={{ height: 600 }}
         view={currentView}
         date={currentDate}
-        views={["month", "week", "day"]}
+        views={["month", "week", "day", "agenda"]}
         onSelectSlot={handleSlotSelected}
         onSelectEvent={handleEventSelected}
         onView={handleViewChange}
         onNavigate={handleNavigate}
+        messages={{
+          next: "Tiếp",
+          previous: "Trước",
+          today: "Hôm nay",
+          month: "Tháng",
+          week: "Tuần",
+          day: "Ngày",
+          agenda: "Lịch trình",
+          date: "Ngày",
+          time: "Thời gian",
+          event: "Sự kiện"
+        }}
       />
 
       <Modal
@@ -260,7 +276,7 @@ const CalendarPage = () => {
           </Form.Item>
 
           <Form.Item label="Mô tả">
-            <Input value={desc} onChange={(e) => setDesc(e.target.value)} />
+            <Input value={description} onChange={(e) => setDescription(e.target.value)} />
           </Form.Item>
 
           <Form.Item label="Bắt đầu">

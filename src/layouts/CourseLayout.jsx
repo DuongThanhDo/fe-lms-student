@@ -229,9 +229,9 @@ const CourseLayout = ({ children }) => {
             Bài trước
           </Button>
 
-          {!nextItem ? (
+          {progress == 100 ? (
             <Button type="primary"
-              onClick={() => handleNext(nextItem, lessonCurrent)}
+              onClick={() => navigator(`/courses/${courseId}/completed`)}
             >
               Hoàn thành <ArrowRightOutlined />
             </Button>

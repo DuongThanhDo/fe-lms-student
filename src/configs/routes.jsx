@@ -17,5 +17,6 @@ export const routes = {
     schedule: '/schedule',
     message: '/message',
     payment: '/payment/:id',
-    paymentrResult: '/payment-result'
+    paymentrResult: '/payment-result',
+    courseCompleted: '/courses/:id/completed',
 };
