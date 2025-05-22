@@ -19,6 +19,7 @@ import MyCourse from "../pages/MyCourse";
 import Quiz from "../pages/Course/ViewCourse/contents/Quiz";
 import CalendarPage from "../pages/Calendar";
 import CourseCompleted from "../pages/Course/CourseCompleted";
+import MessagePage from "../pages/Message";
 
 export const AllRoutes = [
     { path: configs.routes.home, component: Home, },
@@ -38,4 +39,5 @@ export const AllRoutes = [
     { path: configs.routes.quizCourse, component: Quiz, layout: CourseLayout},
     { path: configs.routes.schedule, component: CalendarPage},
     { path: configs.routes.courseCompleted, component: CourseCompleted},
+    { path: configs.routes.message, component: MessagePage},
 ];

@@ -5,7 +5,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { configs } from "../configs";
 
-function CommentItem({
+const CommentItem = ({
   comment,
   user,
   currentUser,
@@ -13,22 +13,19 @@ function CommentItem({
   contentId,
   allComments,
   setAllComments,
-}) {
+}) => {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [showReplies, setShowReplies] = useState(false);
 
-  // Lấy tất cả phản hồi thuộc comment gốc này
   const replies = allComments.filter((c) => c.parent_id === comment.id);
 
-  // Hàm đệ quy tìm comment gốc
   const findRootCommentId = (commentId) => {
     const current = allComments.find((c) => c.id === commentId);
     if (!current?.parent_id) return commentId;
     return findRootCommentId(current.parent_id);
   };
 
-  // Gửi phản hồi
   const handleReply = async () => {
     if (!replyContent.trim()) return;
 
@@ -39,10 +36,6 @@ function CommentItem({
       commentable_id: contentId,
       parent_id: findRootCommentId(comment.id),
     });
-
-    // Cập nhật lại danh sách comment nếu muốn
-    // const newComment = res.data;
-    // setAllComments([...allComments, newComment]);
 
     setReplyContent("");
     setShowReplyInput(false);

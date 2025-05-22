@@ -52,7 +52,7 @@ const CourseInfoSell = ({ course }) => {
         level={4}
         style={{ color: "#f5222d", marginBottom: 8, textAlign: "center" }}
       >
-        {course.price}đ
+        {Number(course.price) > 0 ? course.price + 'đ' : 'Miễn phí'}
       </Title>
 
       <Button

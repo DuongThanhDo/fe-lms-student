@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Typography, Progress } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Header } from "antd/es/layout/layout";
+import { Link } from "react-router-dom";
 
 const CourseHeader = ({ course, navigator, progress, totalLessons, completedLessons }) => {
   return (
@@ -26,6 +27,7 @@ const CourseHeader = ({ course, navigator, progress, totalLessons, completedLess
         <Typography.Text style={{ color: "white" }}>
           {completedLessons}/{totalLessons} bài học
         </Typography.Text>
+        <Link to={`/message?teacher=${course?.course?.teacher?.id}`}  style={{ color: '#1B8381', fontWeight: 600, fontSize: 16, textDecoration: 'none' }}>Nhắn tin</Link>
       </div>
     </Header>
   );
