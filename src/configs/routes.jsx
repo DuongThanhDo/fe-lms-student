@@ -19,4 +19,5 @@ export const routes = {
     payment: '/payment/:id',
     paymentrResult: '/payment-result',
     courseCompleted: '/courses/:id/completed',
+    certificate: '/cretificate/:courseId/student/:studentId'
 };

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Collapse, Checkbox } from "antd";
+import { Typography, Collapse } from "antd";
 import {
   PlayCircleOutlined,
   CodeOutlined,
   QuestionCircleOutlined,
   CheckCircleFilled,
+  LockOutlined,
 } from "@ant-design/icons";
 import "../../assets/css/CourseLayout.css";
 import { formatDuration } from "../../utils/functions/time";
@@ -17,7 +18,7 @@ const SidebarCourse = ({
   selectedItem,
   handleClickItem,
   durations,
-  handleToggleLessonStatus
+  handleToggleLessonStatus,
 }) => {
   const [activeKeys, setActiveKeys] = useState([]);
 
@@ -31,9 +32,7 @@ const SidebarCourse = ({
     const style = { fontSize: 12, color: "#888" };
 
     if (item.type === "lecture" && item.video?.file_url) {
-      const seconds = item.video?.duration || 0;
       const durationText = formatDuration(item.duration);
-
       return (
         <p style={style}>
           <PlayCircleOutlined style={{ marginRight: 8 }} />
@@ -65,6 +64,19 @@ const SidebarCourse = ({
 
   const handleCollapseChange = (keys) => {
     setActiveKeys(keys);
+  };
+
+  const isLessonLocked = (chapter, chapterIndex, itemIndex) => {
+    const previousItems = contents
+      .slice(0, chapterIndex + 1)
+      .flatMap((c, idx) => {
+        if (idx === chapterIndex) {
+          return c.items.slice(0, itemIndex);
+        }
+        return c.items;
+      });
+
+    return previousItems.some((item) => !item.status);
   };
 
   if (!contents || contents.length === 0) {
@@ -103,7 +115,8 @@ const SidebarCourse = ({
                   {indexC + 1}. {_chapter.title}
                 </div>
                 <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>
-                  {_chapter.items.filter((i) => i.status == true).length}/{_chapter.items.length} | {formatDuration(_chapter.duration)}
+                  {_chapter.items.filter((i) => i.status === true).length}/
+                  {_chapter.items.length} | {formatDuration(_chapter.duration)}
                 </div>
               </div>
             }
@@ -111,38 +124,59 @@ const SidebarCourse = ({
           >
             <div className="custom-panel-content">
               <ul>
-                {_chapter.items.map((item, indexI) => (
-                  <li
-                    onClick={() => handleClickItem(item)}
-                    key={item.id}
-                    className={
-                      selectedItem.type == item.type &&
-                      selectedItem.id == item.id
-                        ? "selected-item"
-                        : ""
-                    }
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div>
-                      <p>
-                        {indexI + 1}. {item.title}
-                      </p>
-                      {renderIconAndDuration(item)}
-                    </div>
-                    <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleLessonStatus(item);
+                {_chapter.items.map((item, indexI) => {
+                  const locked = isLessonLocked(_chapter, indexC, indexI);
+                  return (
+                    <li
+                      onClick={() => {
+                        if (!locked) handleClickItem(item);
+                      }}
+                      key={item.id}
+                      className={
+                        selectedItem.type == item.type &&
+                        selectedItem.id == item.id
+                          ? "selected-item"
+                          : ""
+                      }
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        opacity: locked ? 0.5 : 1,
+                        cursor: locked ? "not-allowed" : "pointer",
                       }}
                     >
-                      <Checkbox checked={item.status} />
-                    </div>
-                  </li>
-                ))}
+                      <div>
+                        <p>
+                          {indexI + 1}. {item.title}
+                        </p>
+                        {renderIconAndDuration(item)}
+                      </div>
+                      <div
+                        // onClick={(e) => {
+                        //   e.stopPropagation();
+                        //   if (!locked && !item.status) {
+                        //     handleToggleLessonStatus(item);
+                        //   }
+                        // }}
+                      >
+                        {item.status ? (
+                          <CheckCircleFilled
+                            style={{ color: "#52c41a", fontSize: 18 }}
+                          />
+                        ) : locked ? (
+                          <LockOutlined
+                            style={{ color: "#aaa", fontSize: 18 }}
+                          />
+                        ) : (
+                          <CheckCircleFilled
+                            style={{ color: "#aaa", fontSize: 18 }}
+                          />
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </Panel>

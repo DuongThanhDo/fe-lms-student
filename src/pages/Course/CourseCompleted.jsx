@@ -50,8 +50,7 @@ const CourseCompleted = () => {
   };
 
   const handleDownloadCertificate = () => {
-    // Điều hướng đến trang tải chứng chỉ (sửa theo đường dẫn đúng)
-    navigate("/download-certificate");
+    navigate(`/cretificate/${id}/student/${user.id}`);
   };
 
   return (

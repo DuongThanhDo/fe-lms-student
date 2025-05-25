@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useContext,
+  createContext,
+} from "react";
 import { Button, Layout } from "antd";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -33,6 +39,11 @@ const fetchCourseData = async (userId, courseId) => {
   }
 };
 
+export const LearningProgressContext = createContext({
+  watchedPercent: 0,
+  setWatchedPercent: () => {},
+});
+
 const CourseLayout = ({ children }) => {
   const [showSider, setShowSider] = useState(true);
   const [course, setCourse] = useState(null);
@@ -48,6 +59,12 @@ const CourseLayout = ({ children }) => {
   const pathParts = pathname.split("/");
   const itemType = pathParts[3];
   const itemId = pathParts[4];
+  const [watchedPercent, setWatchedPercent] = useState(0);
+
+  useEffect(() => {
+    console.log("watchedPercent", watchedPercent);
+    console.log("--------", canGoNext(watchedPercent, lessonCurrent));
+  }, [watchedPercent]);
 
   useEffect(() => {
     if (!courseId) return;
@@ -180,75 +197,97 @@ const CourseLayout = ({ children }) => {
 
   const handleNext = (nextItem, lessonCurrent) => {
     if (!lessonCurrent.status) handleToggleLessonStatus(lessonCurrent);
-    if(!!nextItem) navigator(`/courses/${courseId}/${nextItem.type}/${nextItem.id}`);
+    if (!nextItem) return;
+    navigator(`/courses/${courseId}/${nextItem.type}/${nextItem.id}`);
+  };
+
+  const canGoNext = (watchedPercent, lessonCurrent) => {
+    if (lessonCurrent?.status) return true;
+    if (!watchedPercent) return false;
+    if (itemType == "lecture") return watchedPercent >= 60;
+    if (itemType == "quiz") return watchedPercent === true;
+    return true;
   };
 
   return (
-    <Layout style={{ minHeight: "100vh", backgroundColor: "white" }}>
-      <CourseHeader
-        course={course}
-        navigator={navigator}
-        progress={progress}
-        totalLessons={totalLessons}
-        completedLessons={completedLessons}
-      />
+    <LearningProgressContext.Provider
+      style={{ minHeight: "100vh", backgroundColor: "white" }}
+      value={{ watchedPercent, setWatchedPercent }}
+    >
+      <Layout>
+        <CourseHeader
+          course={course}
+          navigator={navigator}
+          progress={progress}
+          totalLessons={totalLessons}
+          completedLessons={completedLessons}
+        />
 
-      <Layout style={{ paddingTop: 64, paddingBottom: 64 }}>
-        <Content
-          style={{
-            marginRight: showSider ? SIDEBAR_WIDTH : 0,
-            transition: "margin-right 0.3s",
-          }}
-        >
-          {children}
-        </Content>
-
-        {showSider && (
-          <SidebarCourse
-            chapter={chapterCurrent}
-            contents={contents}
-            selectedItem={selectedItem}
-            handleClickItem={handleClickItem}
-            handleToggleLessonStatus={handleToggleLessonStatus}
-          />
-        )}
-      </Layout>
-
-      <Footer className="custom-footer">
-        <div>
-          <Button
-            style={{ marginRight: 10 }}
-            icon={<ArrowLeftOutlined />}
-            onClick={() =>
-              navigator(
-                `/courses/${courseId}/${previousItem.type}/${previousItem.id}`
-              )
-            }
-            disabled={!previousItem}
+        <Layout style={{ paddingTop: 64, paddingBottom: 64 }}>
+          <Content
+            style={{
+              marginRight: showSider ? SIDEBAR_WIDTH : 0,
+              transition: "margin-right 0.3s",
+            }}
           >
-            Bài trước
-          </Button>
+            {children}
+          </Content>
 
-          {progress == 100 ? (
-            <Button type="primary"
-              onClick={() => navigator(`/courses/${courseId}/completed`)}
-            >
-              Hoàn thành <ArrowRightOutlined />
-            </Button>
-          ) : (
-            <Button
-              onClick={() => handleNext(nextItem, lessonCurrent)}
-            >
-              Bài tiếp theo <ArrowRightOutlined />
-            </Button>
+          {showSider && (
+            <SidebarCourse
+              chapter={chapterCurrent}
+              contents={contents}
+              selectedItem={selectedItem}
+              handleClickItem={handleClickItem}
+              handleToggleLessonStatus={handleToggleLessonStatus}
+            />
           )}
-        </div>
+        </Layout>
 
-        <Button type="primary" ghost onClick={() => setShowSider(!showSider)}>
-          {showSider ? "Ẩn nội dung" : "Hiện nội dung"}
-        </Button>
-      </Footer>
-    </Layout>
+        <Footer className="custom-footer">
+          <div>
+            <Button
+              style={{ marginRight: 10 }}
+              icon={<ArrowLeftOutlined />}
+              onClick={() =>
+                navigator(
+                  `/courses/${courseId}/${previousItem.type}/${previousItem.id}`
+                )
+              }
+              disabled={!previousItem}
+            >
+              Bài trước
+            </Button>
+
+            {progress == 100 || !nextItem ? (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#1B8381", borderColor: "#1B8381" }}
+                onClick={() => {
+                  handleNext(nextItem, lessonCurrent);
+                  navigator(`/courses/${courseId}/completed`);
+                }}
+                disabled={!canGoNext(watchedPercent, lessonCurrent)}
+              >
+                Hoàn thành <ArrowRightOutlined />
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                onClick={() => handleNext(nextItem, lessonCurrent)}
+                disabled={!canGoNext(watchedPercent, lessonCurrent)}
+              >
+                Bài tiếp theo <ArrowRightOutlined />
+              </Button>
+            )}
+          </div>
+
+          <Button type="primary" ghost onClick={() => setShowSider(!showSider)}>
+            {showSider ? "Ẩn nội dung" : "Hiện nội dung"}
+          </Button>
+        </Footer>
+      </Layout>
+    </LearningProgressContext.Provider>
   );
 };
 
