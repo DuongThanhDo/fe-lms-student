@@ -1,13 +1,15 @@
 import { Tabs, Spin, message, Typography } from "antd";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import CommentBox from "../../../../components/CommentBox";
 import { useSelector } from "react-redux";
 import { configs } from "../../../../configs";
 import NoteLecture from "../../../../components/NoteLecture";
+import { LearningProgressContext } from "../../../../layouts/CourseLayout";
 
 const { TabPane } = Tabs;
+const MAX_DELTA_TO_ADD = 20;
 
 const Lecture = () => {
   const { lectureId } = useParams();
@@ -20,6 +22,14 @@ const Lecture = () => {
   const [loading, setLoading] = useState(true);
   const [videoKey, setVideoKey] = useState("");
   const [currentTime, setCurrentTime] = useState(0);
+
+  // Thêm state theo dõi tổng thời gian đã xem video
+  const [watchedTime, setWatchedTime] = useState(0);
+  const lastTimeRef = useRef(0);
+
+  const { watchedPercent, setWatchedPercent } = useContext(
+    LearningProgressContext
+  );
 
   const videoRef = useRef(null);
 
@@ -39,21 +49,22 @@ const Lecture = () => {
 
   useEffect(() => {
     if (!lectureId) return;
+    setWatchedPercent(0);
     fetchLecture();
   }, [lectureId]);
 
   useEffect(() => {
     const video = videoRef.current;
     const seekTo = Number(timestamp);
-  
+
     if (!video || isNaN(seekTo)) return;
-  
+
     const handleSeek = () => {
       video.currentTime = seekTo;
     };
-  
+
     video.addEventListener("loadedmetadata", handleSeek);
-  
+
     return () => {
       video.removeEventListener("loadedmetadata", handleSeek);
     };
@@ -77,10 +88,23 @@ const Lecture = () => {
     }
   }, [timestamp, location]);
 
-  const handleTimeUpdate = () => {
-    const time = videoRef.current?.currentTime || 0;
-    setCurrentTime(Math.floor(time));
-  };
+const handleTimeUpdate = (e) => {
+  const video = e.target;
+  const current = video.currentTime;
+  setCurrentTime(Math.floor(current));
+
+  const delta = current - lastTimeRef.current;
+
+  if (delta > 0 && delta < MAX_DELTA_TO_ADD) {
+    setWatchedTime((prev) => prev + delta);
+  }
+
+  lastTimeRef.current = current;
+
+  const duration = video.duration || 1;
+  const percent = Math.min(100, (watchedTime / duration) * 100);
+  setWatchedPercent(percent);
+};
 
   if (loading) {
     return (

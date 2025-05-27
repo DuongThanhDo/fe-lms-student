@@ -9,18 +9,18 @@ const TeacherCard = ({ teacher }) => {
   return (
     <Card className="shadow-sm rounded-3 border-0" style={{ width: 300 }}>
       <img
-        src={teacher.image || assets.images.defaultAvatar}
-        alt={teacher.name}
+        src={teacher.profile?.avatar?.file_url || assets.images.noAvatar}
+        alt={teacher.profile?.name}
         className="w-100 rounded-top"
-        style={{ height: 180, objectFit: "cover" }}
+        style={{ height: 200, objectFit: "contain" }}
       />
       <div className="p-1 mt-2">
-        <h5 className="fw-bold">{teacher.name}</h5>
+        <h5 className="fw-bold">{teacher.profile?.name || "Giáo viên"}</h5>
         <p className="mb-1">
-          <strong>Chuyên Ngành:</strong> {teacher.major}
+          <strong>Chuyên Ngành:</strong> {teacher.profession?.major}
         </p>
         <p className="mb-3">
-          <strong>Trình độ:</strong> {teacher.degree}
+          <strong>Trình độ:</strong> {teacher.profession?.degree}
         </p>
         <Link to={`${configs.routes.teacher}/${teacher.id}`}>
           <Button type="primary" block>

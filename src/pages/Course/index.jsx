@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Input, Select, Row, Col } from "antd";
+import { Card, Input, Select, Row, Col, Empty } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CourseCard from "../../components/CourseCard";
 import axios from "axios";
@@ -21,7 +21,6 @@ const Courses = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const pageSize = 12;
-
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -148,13 +147,19 @@ const Courses = () => {
           loader={<p style={{ textAlign: "center" }}>Đang tải khóa học...</p>}
         >
           <div style={{ overflowX: "hidden", padding: "10px" }}>
-            <Row gutter={[16, 16]}>
-              {courses.map((course) => (
-                <Col span={8} key={course.id}>
-                  <CourseCard course={course} />
-                </Col>
-              ))}
-            </Row>
+            {courses.length > 0 ? (
+              <Row gutter={[16, 16]}>
+                {courses.map((course) => (
+                  <Col span={8} key={course.id}>
+                    <CourseCard course={course} />
+                  </Col>
+                ))}
+              </Row>
+            ) : (
+              <div style={{ textAlign: "center", padding: "40px 0" }}>
+                <Empty description="Không tìm khóa học nào" />
+              </div>
+            )}
           </div>
         </InfiniteScroll>
       </Col>

@@ -5,9 +5,11 @@ import banner2 from "./images/banner2.jpg";
 import banner3 from "./images/banner3.jpg";
 import about1 from "./images/about1.jpg";
 import about2 from "./images/about2.jpg";
+import noAvatar from "./images/noAvatar.jpg";
+import bg_chungchi from "./images/bg_chungchi.jpg";
 // import introHotel from './videos/introHotel.mp4'
 
 export const assets = {
-  images: { logo, gomaytinh, banner1, banner2, banner3, about1, about2 },
+  images: { logo, gomaytinh, banner1, banner2, banner3, about1, about2, noAvatar, bg_chungchi },
   // videos: {introHotel}
 };

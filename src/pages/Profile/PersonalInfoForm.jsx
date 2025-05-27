@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, DatePicker, Select, Button, message } from "antd";
+import { Form, Input, DatePicker, Select, Button, message, Card } from "antd";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import axios from "axios";
@@ -57,29 +57,31 @@ const PersonalInfoForm = () => {
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={handleSave}>
-      <Form.Item label="Họ và tên" name="name">
-        <Input placeholder="Nhập họ và tên" />
-      </Form.Item>
-      <Form.Item label="Số điện thoại" name="phone">
-        <Input placeholder="Nhập số điện thoại" />
-      </Form.Item>
-      <Form.Item label="Ngày sinh" name="dob">
-        <DatePicker style={{ width: "100%" }} />
-      </Form.Item>
-      <Form.Item label="Giới tính" name="gender">
-        <Select>
-          <Select.Option value="male">Nam</Select.Option>
-          <Select.Option value="female">Nữ</Select.Option>
-        </Select>
-      </Form.Item>
-      <Form.Item label="Địa chỉ" name="address">
-        <Input placeholder="Nhập địa chỉ" />
-      </Form.Item>
-      <Button type="primary" htmlType="submit" loading={loading}>
-        Lưu thông tin
-      </Button>
-    </Form>
+    <Card>
+      <Form form={form} layout="vertical" onFinish={handleSave}>
+        <Form.Item label="Họ và tên" name="name">
+          <Input placeholder="Nhập họ và tên" />
+        </Form.Item>
+        <Form.Item label="Số điện thoại" name="phone">
+          <Input placeholder="Nhập số điện thoại" />
+        </Form.Item>
+        <Form.Item label="Ngày sinh" name="dob">
+          <DatePicker style={{ width: "100%" }} />
+        </Form.Item>
+        <Form.Item label="Giới tính" name="gender">
+          <Select>
+            <Select.Option value="male">Nam</Select.Option>
+            <Select.Option value="female">Nữ</Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="Địa chỉ" name="address">
+          <Input placeholder="Nhập địa chỉ" />
+        </Form.Item>
+        <Button type="primary" htmlType="submit" loading={loading}>
+          Lưu thông tin
+        </Button>
+      </Form>
+    </Card>
   );
 };
 

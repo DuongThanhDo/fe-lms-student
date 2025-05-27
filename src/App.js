@@ -3,8 +3,10 @@ import "./App.css";
 import DefaultLayout from "./layouts/DefaultLayout";
 import { Fragment } from "react";
 import { AllRoutes } from "./routes/AllRoutes";
+import PrivateRoute, { protectedRoutes } from "./routes/PrivateRoute";
 
 function App() {
+  
   return (
     <Router>
       <div className="App">
@@ -19,14 +21,24 @@ function App() {
               Layout = Fragment;
             }
 
+            const isProtected = protectedRoutes.includes(route.path);
+
             return (
               <Route
                 key={index}
                 path={route.path}
                 element={
-                  <Layout>
-                    <Page />
-                  </Layout>
+                  isProtected ? (
+                    <PrivateRoute>
+                      <Layout>
+                        <Page />
+                      </Layout>
+                    </PrivateRoute>
+                  ) : (
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  )
                 }
               />
             );

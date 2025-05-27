@@ -9,30 +9,52 @@ import {
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { configs } from "../configs";
+import { useNavigate } from "react-router-dom";
 
 const { Text, Title } = Typography;
 
 const CourseInfoSell = ({ course }) => {
   const user = useSelector((state) => state.auth.userInfo);
-  const handlePayment = async () => {
-    try {
-      const response = await axios.get(`${configs.API_BASE_URL}/payment/create`, {
-        params: {
-          courseId: course.id,
-          userId: user.id,
-          amount: course.price,
-        },
-      });
-      console.log(response);
+  const navigate = useNavigate()
 
-      if (response.data && response.data.url) {
-        window.location.href = response.data.url;
-      } else {
-        message.error("Không thể tạo URL thanh toán.");
+  const handleBuyCourse = async () => {
+    if (Number(course.price) > 0) {
+      try {
+        const response = await axios.get(
+          `${configs.API_BASE_URL}/payment/create`,
+          {
+            params: {
+              courseId: course.id,
+              userId: user.id,
+              amount: course.price,
+            },
+          }
+        );
+        console.log(response);
+
+        if (response.data && response.data.url) {
+          window.location.href = response.data.url;
+        } else {
+          message.error("Không thể tạo URL thanh toán.");
+        }
+      } catch (error) {
+        console.error("Lỗi khi tạo thanh toán:", error);
+        message.error("Đã có lỗi xảy ra khi xử lý thanh toán.");
       }
-    } catch (error) {
-      console.error("Lỗi khi tạo thanh toán:", error);
-      message.error("Đã có lỗi xảy ra khi xử lý thanh toán.");
+    } else {
+      try {
+        await axios.post(`${configs.API_BASE_URL}/course-registrations`, {
+          userId: user.id,
+          courseId: course.id,
+        });
+      } catch (error) {
+        message.error("Đăng ký khóa học miễn phí thất bại!");
+      } finally {
+        message.success("Đăng ký khóa học miễn phí thành công!");
+        setTimeout(() => {
+          navigate(`/my-courses`);
+        }, 1000);
+      }
     }
   };
 
@@ -52,13 +74,13 @@ const CourseInfoSell = ({ course }) => {
         level={4}
         style={{ color: "#f5222d", marginBottom: 8, textAlign: "center" }}
       >
-        {course.price}đ
+        {Number(course.price) > 0 ? course.price + "đ" : "Miễn phí"}
       </Title>
 
       <Button
         type="primary"
         block
-        onClick={handlePayment}
+        onClick={handleBuyCourse}
         style={{ marginBottom: 16, backgroundColor: "#00bfa6", border: "none" }}
       >
         Đăng ký học

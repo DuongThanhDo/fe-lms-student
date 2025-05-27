@@ -13,7 +13,7 @@ import { configs } from "../configs";
 dayjs.extend(relativeTime);
 dayjs.locale("vi");
 
-function CommentBox({ contentType, contentId }) {
+const CommentBox = ({ contentType, contentId }) => {
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState("");
   const [infoUser, setInfoUser] = useState({});

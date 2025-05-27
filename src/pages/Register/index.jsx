@@ -45,7 +45,7 @@ const Register = () => {
       
 
       if (response.data?.id) {
-        message.success("Đăng nhập thành công!");
+        message.success("Đăng ký thành công!");
         setTimeout(() => {
           navigate(configs.routes.login); 
         }, 1000);

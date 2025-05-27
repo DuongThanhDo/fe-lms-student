@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Upload, message } from "antd";
+import { Button, Card, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -62,7 +62,7 @@ const AvatarUpload = () => {
   };
 
   return (
-    <div>
+    <Card>
       <p><strong>Xem trước hình ảnh</strong></p>
       <div style={{ maxWidth: "400px", border: "1px solid #ddd", padding: 10, textAlign: "center" }}>
         {imageUrl ? (
@@ -84,7 +84,7 @@ const AvatarUpload = () => {
           Lưu
         </Button>
       )}
-    </div>
+    </Card>
   );
 };
 
