@@ -7,35 +7,20 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { configs } from "../../configs";
 
-const topics = [
-  "Công nghệ phần mềm",
-  "Công nghệ phần mềm",
-  "Công nghệ phần mềm",
-  "Công nghệ phần mềm",
-  "Công nghệ phần mềm",
-  "Công nghệ phần mềm",
-  "Công nghệ phần mềm",
-  "Công nghệ phần mềm",
-];
-
 const Home = () => {
   const [hotCourses, setHotCourses] = useState([]);
   const [freeCourses, setFreeCourses] = useState([]);
-  const [cateOneCourses, setCateOneCourses] = useState([]);
   const [cateTwoCourses, setCateTwoCourses] = useState([]);
   const [topCategories, setTopCategories] = useState([]);
 
   const fetchCourses = async () => {
     try {
-      const [hot, free, cate1, cate2, topCate] = await Promise.all([
+      const [hot, free, cate2, topCate] = await Promise.all([
         axios.get(`${configs.API_BASE_URL}/courses/top-courses`, {
           params: { limit: 4 },
         }),
         axios.get(`${configs.API_BASE_URL}/courses/top-courses`, {
           params: { isFree: true, limit: 4 },
-        }),
-        axios.get(`${configs.API_BASE_URL}/courses/top-courses`, {
-          params: { category: 1, limit: 4 },
         }),
         axios.get(`${configs.API_BASE_URL}/courses/top-courses`, {
           params: { category: 2, limit: 4 },
@@ -47,7 +32,6 @@ const Home = () => {
 
       setHotCourses(hot.data);
       setFreeCourses(free.data);
-      setCateOneCourses(cate1.data);
       setCateTwoCourses(cate2.data);
       setTopCategories(topCate.data);
     } catch (error) {
@@ -109,15 +93,6 @@ const Home = () => {
       <h1 style={{ color: "#1B8381", marginTop: "40px", marginBottom: "60px" }}>
         Khóa học có thể bạn quan tâm
       </h1>
-
-      <h2>Khóa học hàng đầu về công nghệ phần mềm</h2>
-      <Row className="my-5">
-        {cateOneCourses.map((course) => (
-          <Col key={course.id} md={6} lg={4} xl={3} className="mb-4">
-            <CourseCard course={course} />
-          </Col>
-        ))}
-      </Row>
 
       <h2>Khóa học hàng đầu về an toàn thông tin</h2>
       <Row className="my-5">
