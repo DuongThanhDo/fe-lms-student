@@ -1,12 +1,42 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Card, Typography, Button, Space } from "antd";
 import { CheckCircle, Clock, XCircle } from "react-bootstrap-icons";
 import { StatusPayment } from "../../utils/enums";
 import { Link } from "react-router-dom";
+import { configs } from "../../configs";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const { Title, Paragraph } = Typography;
 
 const ReturnPayment = ({ status, courseId }) => {
+  const user = useSelector((state) => state.auth.userInfo);
+  const sentEmailRef = useRef(false);
+
+  useEffect(() => {
+    if (
+      status === StatusPayment.COMPLETED &&
+      user.email &&
+      !sentEmailRef.current 
+    ) {
+      sendEmail(user.email);
+      sentEmailRef.current = true;
+    }
+  }, [status, user.email]);
+
+  const sendEmail = async (email) => {
+    try {
+      await axios.post(`${configs.API_BASE_URL}/mailer/send`, {
+        to: email,
+        subject: "Xác nhận thanh toán khóa học",
+        html: `<p>Cảm ơn bạn đã thanh toán thành công khóa học. Chúc bạn học tập hiệu quả!</p>`,
+      });
+      console.log("Email đã được gửi thành công");
+    } catch (error) {
+      console.error("Gửi email thất bại:", error.response?.data || error.message);
+    }
+  };
+
   let icon = null;
   let title = "";
   let description = "";
@@ -48,9 +78,9 @@ const ReturnPayment = ({ status, courseId }) => {
           <div>{icon}</div>
           <Title level={3}>{title}</Title>
           <Paragraph type="secondary">{description}</Paragraph>
-          <Link to={courseId == 0 ? "/courses" : `/courses/${courseId}`}>
+          <Link to={courseId === 0 ? "/courses" : `/courses/${courseId}`}>
             <Button type="primary" block>
-              {courseId == 0 ? "Quay về khóa học" : "Đi tới khóa học"}
+              {courseId === 0 ? "Quay về khóa học" : "Đi tới khóa học"}
             </Button>
           </Link>
         </Space>

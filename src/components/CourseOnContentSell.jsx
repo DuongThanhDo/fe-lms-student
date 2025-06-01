@@ -14,6 +14,7 @@ const CourseOnContentSell = () => {
   const [contents, setContents] = useState([]);
   const [totalLessons, setTotalLessons] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
+  const [activeKeys, setActiveKeys] = useState([]);
 
   const fetchCourseContent = async () => {
     try {
@@ -34,6 +35,10 @@ const CourseOnContentSell = () => {
       setContents(data);
       setTotalLessons(lessonsCount);
       setTotalDuration(durationSum);
+
+      if (data.length > 0) {
+        setActiveKeys([String(data[0].id)]);
+      }
     } catch (error) {
       console.error("Lỗi tải thông tin khóa học:", error);
     }
@@ -72,9 +77,11 @@ const CourseOnContentSell = () => {
         <strong>{formatDuration(totalDuration, 'text')}</strong>
       </Paragraph>
       <Collapse
-      defaultActiveKey={[contents[0]?.id || 0]}>
+        activeKey={activeKeys}
+        onChange={(keys) => setActiveKeys(Array.isArray(keys) ? keys : [keys])}>
         {contents.map((chapter, chapterIndex) => (
           <Panel
+            style={{ paddingTop: 12 }}
             key={chapter.id || chapterIndex}
             header={
               <div
@@ -82,6 +89,7 @@ const CourseOnContentSell = () => {
                   display: "flex",  
                   justifyContent: "space-between",
                   width: "100%",
+                  height: 30
                 }}
               >
                 <span>
@@ -100,7 +108,7 @@ const CourseOnContentSell = () => {
                 <div
                   key={lesson.id || idx}
                   style={{
-                    padding: "8px 16px",
+                    padding: "18px 16px",
                     borderBottom: "1px solid #f0f0f0",
                     display: "flex",
                     alignItems: "center",

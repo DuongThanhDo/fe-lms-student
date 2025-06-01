@@ -209,14 +209,14 @@ const CalendarPage = () => {
   };
 
   const eventActions = [
-    <Button key="cancel" onClick={handleClose}>Cancel</Button>,
-    <Button key="delete" danger onClick={deleteEvent}>Delete</Button>,
-    <Button key="confirm" type="primary" onClick={updateEvent}>Confirm Edit</Button>,
+    <Button key="cancel" onClick={handleClose}>Hủy</Button>,
+    <Button key="delete" danger onClick={deleteEvent}>Xóa</Button>,
+    <Button key="confirm" type="primary" onClick={updateEvent}>Xác nhận</Button>,
   ];
 
   const appointmentActions = [
-    <Button key="cancel" onClick={handleClose}>Cancel</Button>,
-    <Button key="submit" type="primary" onClick={setNewAppointment}>Submit</Button>,
+    <Button key="cancel" onClick={handleClose}>Hủy</Button>,
+    <Button key="submit" type="primary" onClick={setNewAppointment}>Xác nhận</Button>,
   ];
 
   return (
